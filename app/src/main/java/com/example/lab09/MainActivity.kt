@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavType
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.outlined.ShoppingCart
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,11 +50,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ProgPrincipal9() {
-    val urlBase = "https://json-placeholder.mock.beeceptor.com/"
-    val retrofit = Retrofit.Builder().baseUrl(urlBase)
+    val urlBase = "https://dummyjson.com/"
+    val retrofit = Retrofit.Builder()
+        .baseUrl(urlBase)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    val servicio = retrofit.create(PostApiService::class.java)
+    val servicio = retrofit.create(ProductApiService::class.java)
     val navController = rememberNavController()
 
     Scaffold(
@@ -97,6 +99,12 @@ fun BarraInferior(navController: NavHostController) {
             selected = navController.currentDestination?.route == "posts",
             onClick = { navController.navigate("posts") }
         )
+        NavigationBarItem(
+            icon = { Icon(Icons.Outlined.ShoppingCart, contentDescription = "Products") },
+            label = { Text("Products") },
+            selected = navController.currentDestination?.route == "products",
+            onClick = { navController.navigate("products") }
+        )
     }
 }
 
@@ -104,7 +112,7 @@ fun BarraInferior(navController: NavHostController) {
 fun Contenido(
     pv: PaddingValues,
     navController: NavHostController,
-    servicio: PostApiService
+    servicio: ProductApiService
 ) {
     Box(
         modifier = Modifier
@@ -115,13 +123,14 @@ fun Contenido(
             navController = navController,
             startDestination = "inicio"
         ) {
+            composable("products") { ScreenProducts(navController, servicio) }
             composable("inicio") { ScreenInicio() }
-            composable("posts") { ScreenPosts(navController, servicio) }
+            composable("posts") { ScreenPosts(navController, servicio as PostApiService) }
             composable(
                 "postsVer/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) {
-                ScreenPost(navController, servicio, it.arguments!!.getInt("id"))
+                ScreenPost(navController, servicio as PostApiService, it.arguments!!.getInt("id"))
             }
         }
     }
