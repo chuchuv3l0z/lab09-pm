@@ -65,3 +65,40 @@ fun ProgPrincipal9() {
         content = { paddingValues -> Contenido(paddingValues, navController, servicio) }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraSuperior() {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = "JSONPlaceHolder Access",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    )
+}
+
+@Composable
+fun BarraInferior(navController: NavHostController) {
+    NavigationBar(
+        containerColor = Color.LightGray
+    ) {
+        NavigationBarItem(
+            icon = { Icon(Icons.Outlined.Home, contentDescription = "Inicio") },
+            label = { Text("Inicio") },
+            selected = navController.currentDestination?.route == "inicio",
+            onClick = { navController.navigate("inicio") }
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Outlined.Favorite, contentDescription = "Posts") },
+            label = { Text("Posts") },
+            selected = navController.currentDestination?.route == "posts",
+            onClick = { navController.navigate("posts") }
+        )
+    }
+}
